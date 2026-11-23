@@ -1,9 +1,15 @@
 import { useEffect, useState } from "react";
-import { CATEGORY_COLORS, CATEGORY_LABELS } from "../data/periodicTable.js";
-import { getElementResearch } from "../services/elementApi.js";
+import { CATEGORY_COLORS, CATEGORY_LABELS } from "../data/periodicTable";
+import { getElementResearch } from "../services/elementApi";
+import type { Element, ElementResearch, ElementTileStyle } from "../types";
 
-export default function ElementModal({ element, onClose }) {
-  const [research, setResearch] = useState(null);
+interface ElementModalProps {
+  element: Element | null;
+  onClose: () => void;
+}
+
+export default function ElementModal({ element, onClose }: ElementModalProps) {
+  const [research, setResearch] = useState<ElementResearch | null>(null);
   const [researchError, setResearchError] = useState("");
 
   useEffect(() => {
@@ -14,14 +20,16 @@ export default function ElementModal({ element, onClose }) {
     getElementResearch(element.atomicNumber, controller.signal)
       .then(setResearch)
       .catch((error) => {
-        if (!controller.signal.aborted) setResearchError(error.message);
+        if (!controller.signal.aborted) {
+          setResearchError(error instanceof Error ? error.message : "Could not load element insights.");
+        }
       });
     return () => controller.abort();
   }, [element]);
 
   useEffect(() => {
     if (!element) return undefined;
-    function onKeyDown(event) {
+    function onKeyDown(event: KeyboardEvent) {
       if (event.key === "Escape") onClose();
     }
     window.addEventListener("keydown", onKeyDown);
@@ -40,7 +48,7 @@ export default function ElementModal({ element, onClose }) {
       >
         <button className="modal-close" type="button" onClick={onClose} aria-label="Close element details">×</button>
         <div className="modal-heading">
-          <div className="modal-element-icon" style={{ "--tile-color": CATEGORY_COLORS[element.category] }}>
+          <div className="modal-element-icon" style={{ "--tile-color": CATEGORY_COLORS[element.category] } as ElementTileStyle}>
             <span className="tile-number">{element.atomicNumber}</span>
             <span className="tile-symbol">{element.symbol}</span>
           </div>
@@ -78,7 +86,12 @@ export default function ElementModal({ element, onClose }) {
   );
 }
 
-function Property({ label, value }) {
+interface PropertyProps {
+  label: string;
+  value: string;
+}
+
+function Property({ label, value }: PropertyProps) {
   return (
     <div className="property">
       <span>{label}</span>

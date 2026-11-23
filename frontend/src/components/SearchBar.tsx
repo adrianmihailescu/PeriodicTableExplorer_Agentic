@@ -1,4 +1,11 @@
-export default function SearchBar({ value, onChange, resultCount, totalCount }) {
+interface SearchBarProps {
+  value: string;
+  onChange: (value: string) => void;
+  resultCount: number;
+  totalCount: number;
+}
+
+export default function SearchBar({ value, onChange, resultCount, totalCount }: SearchBarProps) {
   return (
     <div className="search-wrap">
       <svg aria-hidden="true" viewBox="0 0 24 24" className="search-icon">

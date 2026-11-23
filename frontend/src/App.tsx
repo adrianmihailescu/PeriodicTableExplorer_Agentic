@@ -1,22 +1,25 @@
 import { useEffect, useMemo, useState } from "react";
-import PeriodicTable from "./components/PeriodicTable.jsx";
-import SearchBar from "./components/SearchBar.jsx";
-import CategoryLegend from "./components/CategoryLegend.jsx";
-import ElementModal from "./components/ElementModal.jsx";
-import { CATEGORY_LABELS } from "./data/periodicTable.js";
-import { getElements } from "./services/elementApi.js";
+import PeriodicTable from "./components/PeriodicTable";
+import SearchBar from "./components/SearchBar";
+import CategoryLegend from "./components/CategoryLegend";
+import ElementModal from "./components/ElementModal";
+import { CATEGORY_LABELS } from "./data/periodicTable";
+import { getElements } from "./services/elementApi";
+import type { Element, ElementCategory } from "./types";
 
 export default function App() {
-  const [elements, setElements] = useState([]);
+  const [elements, setElements] = useState<Element[]>([]);
   const [search, setSearch] = useState("");
-  const [category, setCategory] = useState("");
-  const [selectedElement, setSelectedElement] = useState(null);
+  const [category, setCategory] = useState<ElementCategory | "">("");
+  const [selectedElement, setSelectedElement] = useState<Element | null>(null);
   const [error, setError] = useState("");
 
   useEffect(() => {
     getElements()
       .then(setElements)
-      .catch((requestError) => setError(requestError.message));
+      .catch((requestError: unknown) => {
+        setError(requestError instanceof Error ? requestError.message : "The element service could not be reached.");
+      });
   }, []);
 
   const filteredElements = useMemo(() => {

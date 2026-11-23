@@ -1,4 +1,6 @@
-export const CATEGORY_LABELS = {
+import type { ElementCategory } from "../types";
+
+export const CATEGORY_LABELS: Record<ElementCategory, string> = {
   "alkali-metal": "Alkali metals",
   "alkaline-earth-metal": "Alkaline earth metals",
   "transition-metal": "Transition metals",
@@ -11,7 +13,7 @@ export const CATEGORY_LABELS = {
   unknown: "Unknown properties",
 };
 
-export const CATEGORY_COLORS = {
+export const CATEGORY_COLORS: Record<ElementCategory, string> = {
   "alkali-metal": "#f8b4a9",
   "alkaline-earth-metal": "#ffd27d",
   "transition-metal": "#a9c8ff",
@@ -24,4 +26,4 @@ export const CATEGORY_COLORS = {
   unknown: "#d0d9e8",
 };
 
-export const SERIES_PERIODS = { 8: "Lanthanides", 9: "Actinides" };
+export const SERIES_PERIODS: Record<8 | 9, string> = { 8: "Lanthanides", 9: "Actinides" };

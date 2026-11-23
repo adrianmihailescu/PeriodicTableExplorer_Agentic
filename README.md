@@ -21,14 +21,15 @@ Open the frontend at [http://localhost:5173](http://localhost:5173). The API run
 ## Other commands
 
 ```bash
-npm run build       # Build the frontend and type-check the backend
+npm run build       # Type-check and build the frontend, then build the backend
+npm run typecheck --workspace frontend  # Type-check the React frontend
 npm run test        # Run backend service tests
 npm run start       # Start the compiled backend
 ```
 
 ## Project structure
 
-- `frontend/` — React UI, search, family filters, and element details dialog.
+- `frontend/` — typed React UI in TSX, search, family filters, and element details dialog.
 - `backend/` — typed REST API, bundled element data, and deterministic agent services.
 - `backend/agents/` and `.github/agents/` — role and workflow instructions for the chemistry agents and coding assistants.
 

@@ -1,7 +1,14 @@
-import ElementTile from "./ElementTile.jsx";
-import { SERIES_PERIODS } from "../data/periodicTable.js";
+import ElementTile from "./ElementTile";
+import { SERIES_PERIODS } from "../data/periodicTable";
+import type { Element } from "../types";
 
-export default function PeriodicTable({ elements, selectedElement, onSelect }) {
+interface PeriodicTableProps {
+  elements: Element[];
+  selectedElement: Element | null;
+  onSelect: (element: Element) => void;
+}
+
+export default function PeriodicTable({ elements, selectedElement, onSelect }: PeriodicTableProps) {
   const mainElements = elements.filter((element) => element.period <= 7);
   const seriesElements = elements.filter((element) => element.period >= 8);
 
@@ -18,7 +25,7 @@ export default function PeriodicTable({ elements, selectedElement, onSelect }) {
               element={element}
               selected={selectedElement?.atomicNumber === element.atomicNumber}
               onClick={onSelect}
-              style={{ "--group": element.group, "--period": element.period }}
+              style={{ "--group": element.group ?? undefined, "--period": element.period }}
             />
           ))}
         </div>
