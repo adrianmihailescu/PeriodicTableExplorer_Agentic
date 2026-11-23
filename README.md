@@ -2,6 +2,11 @@
 
 An interactive periodic table built with React, Vite, TypeScript, and Express. Select an element to see its properties, search by name or symbol, and filter by element family.
 
+![alt text](images/image.png)
+search functionality
+![alt text](images/image-1.png)
+![alt text](images/image-2.png)
+
 ## Requirements
 
 - Node.js 20.19+ or 22.12+

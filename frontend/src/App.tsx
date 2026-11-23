@@ -38,7 +38,7 @@ export default function App() {
       <header className="topbar">
         <a className="brand" href="#" aria-label="Periodic Table Explorer home">
           <span className="brand-mark">Ag</span>
-          <span>element<span className="brand-light">ary</span></span>
+          <span>element</span>
         </a>
         <span className="topbar-note"><span className="status-dot" /> An interactive chemistry guide</span>
       </header>
