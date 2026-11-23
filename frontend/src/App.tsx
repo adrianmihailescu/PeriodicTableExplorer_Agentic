@@ -37,7 +37,7 @@ export default function App() {
     <main className="app-shell">
       <header className="topbar">
         <a className="brand" href="#" aria-label="Periodic Table Explorer home">
-          <span className="brand-mark">Pt</span>
+          <span className="brand-mark">Ag</span>
           <span>element<span className="brand-light">ary</span></span>
         </a>
         <span className="topbar-note"><span className="status-dot" /> An interactive chemistry guide</span>
@@ -46,7 +46,7 @@ export default function App() {
       <section className="hero">
         <div className="hero-copy">
           <span className="eyebrow"><span className="sparkle">✳</span> THE ELEMENTS, REIMAGINED</span>
-          <h1>A little more <span>elementary.</span></h1>
+          <h1>The periodic table of <span>elements.</span></h1>
           <p>Explore the building blocks of everything. Pick an element, uncover its story, and see how the pieces fit together.</p>
         </div>
         <div className="hero-stat" aria-label={`${elements.length} elements`}>
@@ -89,8 +89,7 @@ export default function App() {
       </section>
 
       <footer className="page-footer">
-        <span>Made for the curious.</span>
-        <span>118 elements · One universe of possibilities</span>
+        <span>118 elements</span>
       </footer>
       <ElementModal element={selectedElement} onClose={() => setSelectedElement(null)} />
     </main>
