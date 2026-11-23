@@ -45,7 +45,6 @@ export default function App() {
 
       <section className="hero">
         <div className="hero-copy">
-          <span className="eyebrow"><span className="sparkle">✳</span> THE ELEMENTS, REIMAGINED</span>
           <h1>The periodic table of <span>elements.</span></h1>
           <p>Explore the building blocks of everything. Pick an element, uncover its story, and see how the pieces fit together.</p>
         </div>
