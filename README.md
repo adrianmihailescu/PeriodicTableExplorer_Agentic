@@ -35,10 +35,12 @@ npm run start       # Start the compiled backend
 ## Project structure
 
 - `frontend/` — typed React UI in TSX, search, family filters, and element details dialog.
-- `backend/` — typed REST API, bundled element data, and deterministic agent services.
+- `backend/` — typed REST API, live public element data, and deterministic agent services.
 - `backend/agents/` and `.github/agents/` — role and workflow instructions for the chemistry agents and coding assistants.
 
-The local agent services summarize facts from the bundled dataset; they do not call an external AI service or invent missing measurements. Agent definitions are in Markdown and can guide future AI integrations.
+Element records are fetched from the [PeriodicTableOfElements.org API](https://periodictableofelements.org/api/) and cached in memory for one hour. [PubChem PUG REST](https://pubchem.ncbi.nlm.nih.gov/docs/pug-rest) supplements atomic mass and electron configuration when the primary record lacks them. The API requires network access on the backend; if the primary source is unavailable, element endpoints return an error rather than serving outdated bundled data. PubChem failures are logged and do not block records available from the primary source.
+
+The [NIST Chemistry WebBook](https://webbook.nist.gov/chemistry/) provides CGI-based, per-species HTML lookup pages rather than a bulk periodic-table JSON API, so the element dialog links to its lookup instead of scraping it. The local agent services summarize the loaded element facts; they do not call an external AI service or invent missing measurements. Element values are attributed in the detail dialog.
 
 ## API
 

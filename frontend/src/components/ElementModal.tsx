@@ -38,6 +38,11 @@ export default function ElementModal({ element, onClose }: ElementModalProps) {
 
   if (!element) return null;
 
+  const encodedName = encodeURIComponent(element.name);
+  const periodicTableUrl = `https://api.periodictableofelements.org/elements/${element.atomicNumber}/`;
+  const pubChemUrl = `https://pubchem.ncbi.nlm.nih.gov/#query=${encodedName}`;
+  const nistUrl = `https://webbook.nist.gov/cgi/cbook.cgi?Name=${encodedName}`;
+
   return (
     <div className="modal-backdrop" onMouseDown={(event) => event.target === event.currentTarget && onClose()}>
       <section
@@ -80,7 +85,14 @@ export default function ElementModal({ element, onClose }: ElementModalProps) {
             <p className="muted-copy">Gathering element facts…</p>
           )}
         </div>
-        <div className="modal-footer">Reference data · Values may vary between isotopes</div>
+        <div className="modal-footer">
+          <span>Reference data · Values may vary between isotopes</span>
+          <nav className="source-links" aria-label="External element sources">
+            <a href={periodicTableUrl} target="_blank" rel="noreferrer">PeriodicTableOfElements.org</a>
+            <a href={pubChemUrl} target="_blank" rel="noreferrer">PubChem</a>
+            <a href={nistUrl} target="_blank" rel="noreferrer">NIST WebBook lookup</a>
+          </nav>
+        </div>
       </section>
     </div>
   );

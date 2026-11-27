@@ -4,40 +4,58 @@ import type { ElementCategory } from "../types.js";
 import { getElementByAtomicNumber, listElements } from "../services/elementService.js";
 import { researchElement } from "../services/agentService.js";
 
-export function getElements(req: Request, res: Response): void {
+function sendDataSourceError(res: Response, error: unknown): void {
+  const reason = error instanceof Error ? error.message : "Unknown data-source error.";
+  console.error("Could not retrieve public element data.", error);
+  res.status(502).json({ error: `Could not retrieve public element data. ${reason}` });
+}
+
+export async function getElements(req: Request, res: Response): Promise<void> {
   const search = typeof req.query.q === "string" ? req.query.q : "";
   const categoryParam = typeof req.query.category === "string" ? req.query.category : undefined;
   if (categoryParam && !ELEMENT_CATEGORIES.includes(categoryParam as ElementCategory)) {
     res.status(400).json({ error: "Unknown element category." });
     return;
   }
-  res.json(listElements(search, categoryParam as ElementCategory | undefined));
+  try {
+    res.json(await listElements(search, categoryParam as ElementCategory | undefined));
+  } catch (error) {
+    sendDataSourceError(res, error);
+  }
 }
 
-export function getElement(req: Request, res: Response): void {
+export async function getElement(req: Request, res: Response): Promise<void> {
   const atomicNumber = Number(req.params.atomicNumber);
   if (!Number.isInteger(atomicNumber) || atomicNumber < 1 || atomicNumber > 118) {
     res.status(400).json({ error: "Atomic number must be an integer from 1 to 118." });
     return;
   }
-  const element = getElementByAtomicNumber(atomicNumber);
-  if (!element) {
-    res.status(404).json({ error: "Element not found." });
-    return;
+  try {
+    const element = await getElementByAtomicNumber(atomicNumber);
+    if (!element) {
+      res.status(404).json({ error: "Element not found." });
+      return;
+    }
+    res.json(element);
+  } catch (error) {
+    sendDataSourceError(res, error);
   }
-  res.json(element);
 }
 
-export function researchElementDetails(req: Request, res: Response): void {
+export async function researchElementDetails(req: Request, res: Response): Promise<void> {
   const atomicNumber = Number(req.params.atomicNumber);
   if (!Number.isInteger(atomicNumber) || atomicNumber < 1 || atomicNumber > 118) {
     res.status(400).json({ error: "Atomic number must be an integer from 1 to 118." });
     return;
   }
-  const element = getElementByAtomicNumber(atomicNumber);
-  if (!element) {
-    res.status(404).json({ error: "Element not found." });
-    return;
+  try {
+    const element = await getElementByAtomicNumber(atomicNumber);
+    if (!element) {
+      res.status(404).json({ error: "Element not found." });
+      return;
+    }
+    res.json(researchElement(element));
+  } catch (error) {
+    sendDataSourceError(res, error);
   }
-  res.json(researchElement(element));
 }
