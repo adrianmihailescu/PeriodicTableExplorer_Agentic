@@ -24,6 +24,7 @@ export interface Element {
   period: number;
   phase: ElementPhase;
   electronConfiguration: string;
+  electronShells: number[];
   discoveredBy: string;
   summary: string;
 }

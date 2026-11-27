@@ -488,7 +488,7 @@ button {
 
 .element-modal {
   position: relative;
-  width: min(490px, 100%);
+  width: min(640px, 100%);
   max-height: min(90vh, 760px);
   overflow-y: auto;
   padding: 28px;
@@ -602,6 +602,99 @@ button {
   color: #354e6d;
   font-size: 13px;
   font-weight: 600;
+}
+
+.electron-shell-panel {
+  margin-top: 16px;
+  padding: 12px;
+  border: 1px solid #e6f1fa;
+  border-radius: 9px;
+  background: linear-gradient(145deg, #fbfdff, #f1f8fe);
+}
+
+.electron-shell-panel h3 {
+  margin: 0 0 6px;
+  color: #3c72b2;
+  font-size: 15px;
+}
+
+.electron-shell-content {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(180px, .85fr);
+  align-items: center;
+  gap: 10px;
+}
+
+.electron-shell-svg {
+  display: block;
+  width: 100%;
+  max-width: 260px;
+  justify-self: center;
+  overflow: visible;
+}
+
+.electron-orbit {
+  fill: none;
+  stroke: #c2c6cb;
+  stroke-width: 1.6;
+}
+
+.shell-electron {
+  fill: #454545;
+  stroke: white;
+  stroke-width: 1.3;
+}
+
+.shell-nucleus {
+  fill: #d7edfc;
+  stroke: #aeb4bb;
+  stroke-width: 1.8;
+}
+
+.shell-nucleus-label {
+  fill: #454545;
+  font-size: 11px;
+  font-weight: 700;
+  text-anchor: middle;
+}
+
+.electron-shell-key {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin: 0;
+  min-width: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.electron-shell-key li {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 9px;
+  border: 1px solid #e6f1fa;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, .76);
+  color: #7790a8;
+  font-size: 14px;
+  line-height: 1.2;
+}
+
+.electron-shell-key strong {
+  color: #344c63;
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.electron-shell-help {
+  margin: 8px 0 0;
+  color: #718094;
+  font-size: 14px;
+  line-height: 1.45;
 }
 
 .research-panel {
@@ -720,6 +813,20 @@ button {
   .page-footer {
     gap: 10px;
     font-size: 12px;
+  }
+}
+
+@media (max-width: 520px) {
+  .electron-shell-content {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .electron-shell-svg {
+    max-width: 240px;
+  }
+
+  .electron-shell-key {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 

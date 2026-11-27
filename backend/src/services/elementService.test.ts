@@ -19,6 +19,7 @@ test("source normalization retains element fields and detached-series layout", (
       period: 1,
       state_at_room_temp: "gas",
       electron_configuration_semantic: "1s1",
+      electrons_per_shell: [1],
       discovered_by: "Henry Cavendish",
     },
     {
@@ -31,6 +32,7 @@ test("source normalization retains element fields and detached-series layout", (
       period: 6,
       state_at_room_temp: "solid",
       electron_configuration_semantic: "[Xe] 4f1 5d1 6s2",
+      electrons_per_shell: [2, 8, 18, 19, 9, 2],
       discovered_by: "Jons Jacob Berzelius, Wilhelm Hisinger",
     },
     {
@@ -43,6 +45,7 @@ test("source normalization retains element fields and detached-series layout", (
       period: 6,
       state_at_room_temp: "solid",
       electron_configuration_semantic: "[Xe] 5d1 6s2",
+      electrons_per_shell: [2, 8, 18, 18, 9, 2],
       discovered_by: "Carl Gustaf Mosander",
     },
     {
@@ -55,6 +58,7 @@ test("source normalization retains element fields and detached-series layout", (
       period: 7,
       state_at_room_temp: "solid",
       electron_configuration_semantic: "[Rn] 6d2 7s2",
+      electrons_per_shell: [2, 8, 18, 32, 18, 10, 2],
       discovered_by: "Jons Jacob Berzelius",
     },
     {
@@ -67,13 +71,14 @@ test("source normalization retains element fields and detached-series layout", (
       period: 7,
       state_at_room_temp: "solid",
       electron_configuration_semantic: "[Rn] 6d1 7s2",
+      electrons_per_shell: [2, 8, 18, 32, 18, 9, 2],
       discovered_by: "Friedrich Oskar Giesel, Andre-Louis Debierne",
     },
   ]);
 
   assert.deepEqual(
-    [elements[0]?.symbol, elements[0]?.category, elements[0]?.phase, elements[0]?.discoveredBy],
-    ["H", "reactive-nonmetal", "Gas", "Henry Cavendish"],
+    [elements[0]?.symbol, elements[0]?.category, elements[0]?.phase, elements[0]?.electronShells, elements[0]?.discoveredBy],
+    ["H", "reactive-nonmetal", "Gas", [1], "Henry Cavendish"],
   );
   assert.deepEqual(
     [elements[1]?.symbol, elements[1]?.group, elements[1]?.period],
@@ -105,6 +110,7 @@ test("PubChem values supplement absent mass and electron configuration", () => {
       period: 1,
       state_at_room_temp: "gas",
       electron_configuration_semantic: "",
+      electrons_per_shell: [1],
       discovered_by: "Henry Cavendish",
     }],
     {

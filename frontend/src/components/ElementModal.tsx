@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { CATEGORY_COLORS, CATEGORY_LABELS } from "../data/periodicTable";
+import ElectronShellDiagram from "./ElectronShellDiagram";
 import LoadingSpinner from "./LoadingSpinner";
 import { getElementResearch } from "../services/elementApi";
 import type { Element, ElementResearch, ElementTileStyle } from "../types";
@@ -73,6 +74,7 @@ export default function ElementModal({ element, onClose }: ElementModalProps) {
           <Property label="Electron configuration" value={element.electronConfiguration} />
           <Property label="Discovered by" value={element.discoveredBy} />
         </div>
+        <ElectronShellDiagram element={element} />
         <div className="research-panel" aria-busy={!research && !researchError}>
           <h3>Element insight</h3>
           {research ? (

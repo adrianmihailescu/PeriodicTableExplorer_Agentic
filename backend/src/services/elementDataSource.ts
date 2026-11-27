@@ -78,6 +78,12 @@ function normalizePhase(value: string): ElementPhase {
   return "Unknown";
 }
 
+function isValidElectronShells(value: unknown, atomicNumber: number): value is number[] {
+  return Array.isArray(value)
+    && value.every((count: unknown) => typeof count === "number" && Number.isInteger(count) && count >= 0)
+    && value.reduce((sum: number, count: number) => sum + count, 0) === atomicNumber;
+}
+
 async function fetchJson(url: string): Promise<unknown> {
   const response = await fetch(url, { signal: AbortSignal.timeout(10_000) });
   if (!response.ok) {
@@ -172,6 +178,10 @@ function normalizeElementRecords(data: unknown, pubChemRows?: PubChemRows): Elem
     if (!electronConfiguration) {
       throw new Error(`No electron configuration is available for element ${atomicNumber}.`);
     }
+    const electronShells = item.electrons_per_shell;
+    if (!isValidElectronShells(electronShells, atomicNumber)) {
+      throw new Error(`PeriodicTableOfElements.org returned invalid electron-shell counts for element ${atomicNumber}.`);
+    }
     const state = typeof item.state_at_room_temp === "string"
       ? item.state_at_room_temp
       : pubChem?.get("StandardState") ?? "";
@@ -190,6 +200,7 @@ function normalizeElementRecords(data: unknown, pubChemRows?: PubChemRows): Elem
       period,
       phase,
       electronConfiguration,
+      electronShells,
       discoveredBy,
       summary: `${name} (${symbol}) is ${categoryDescriptions[category]}. It is a ${phase.toLowerCase()} at room temperature and belongs to the ${seriesName}.`,
     };
