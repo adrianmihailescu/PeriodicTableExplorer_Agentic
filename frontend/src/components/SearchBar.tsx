@@ -1,9 +1,4 @@
-interface SearchBarProps {
-  value: string;
-  onChange: (value: string) => void;
-  resultCount: number;
-  totalCount: number;
-}
+import type { SearchBarProps } from "./types/SearchBar.types";
 
 export default function SearchBar({ value, onChange, resultCount, totalCount }: SearchBarProps) {
   return (

@@ -1,12 +1,6 @@
 import { CATEGORY_COLORS } from "../data/periodicTable";
-import type { Element, ElementTileStyle } from "../types";
-
-interface ElementTileProps {
-  element: Element;
-  onClick: (element: Element) => void;
-  selected?: boolean;
-  style?: ElementTileStyle;
-}
+import type { ElementTileStyle } from "../types";
+import type { ElementTileProps } from "./types/ElementTile.types";
 
 export default function ElementTile({ element, onClick, selected = false, style = {} }: ElementTileProps) {
   return (

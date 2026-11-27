@@ -1,10 +1,6 @@
 import { CATEGORY_COLORS, CATEGORY_LABELS } from "../data/periodicTable";
 import type { ElementCategory, ElementTileStyle } from "../types";
-
-interface CategoryLegendProps {
-  activeCategory: ElementCategory | "";
-  onSelect: (category: ElementCategory | "") => void;
-}
+import type { CategoryLegendProps } from "./types/CategoryLegend.types";
 
 export default function CategoryLegend({ activeCategory, onSelect }: CategoryLegendProps) {
   return (

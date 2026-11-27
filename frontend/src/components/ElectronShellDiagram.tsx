@@ -1,8 +1,4 @@
-import type { Element } from "../types";
-
-interface ElectronShellDiagramProps {
-  element: Element;
-}
+import type { ElectronShellDiagramProps } from "./types/ElectronShellDiagram.types";
 
 const shellLabels = ["K", "L", "M", "N", "O", "P", "Q"];
 const center = 150;

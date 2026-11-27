@@ -3,12 +3,8 @@ import { CATEGORY_COLORS, CATEGORY_LABELS } from "../data/periodicTable";
 import ElectronShellDiagram from "./ElectronShellDiagram";
 import LoadingSpinner from "./LoadingSpinner";
 import { getElementResearch } from "../services/elementApi";
-import type { Element, ElementResearch, ElementTileStyle } from "../types";
-
-interface ElementModalProps {
-  element: Element | null;
-  onClose: () => void;
-}
+import type { ElementResearch, ElementTileStyle } from "../types";
+import type { ElementModalProps, PropertyProps } from "./types/ElementModal.types";
 
 export default function ElementModal({ element, onClose }: ElementModalProps) {
   const [research, setResearch] = useState<ElementResearch | null>(null);
@@ -99,11 +95,6 @@ export default function ElementModal({ element, onClose }: ElementModalProps) {
       </section>
     </div>
   );
-}
-
-interface PropertyProps {
-  label: string;
-  value: string;
 }
 
 function Property({ label, value }: PropertyProps) {

@@ -1,7 +1,4 @@
-interface LoadingSpinnerProps {
-  label: string;
-  size?: "inline" | "large";
-}
+import type { LoadingSpinnerProps } from "./types/LoadingSpinner.types";
 
 export default function LoadingSpinner({ label, size = "inline" }: LoadingSpinnerProps) {
   return (

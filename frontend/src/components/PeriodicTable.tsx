@@ -1,12 +1,6 @@
 import ElementTile from "./ElementTile";
 import { SERIES_PERIODS } from "../data/periodicTable";
-import type { Element } from "../types";
-
-interface PeriodicTableProps {
-  elements: Element[];
-  selectedElement: Element | null;
-  onSelect: (element: Element) => void;
-}
+import type { PeriodicTableProps } from "./types/PeriodicTable.types";
 
 export default function PeriodicTable({ elements, selectedElement, onSelect }: PeriodicTableProps) {
   const mainElements = elements.filter((element) => element.period <= 7);
