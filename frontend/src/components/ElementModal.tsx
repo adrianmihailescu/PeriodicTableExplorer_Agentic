@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
+import type { KeyboardEvent as ReactKeyboardEvent } from "react";
 import { CATEGORY_COLORS, CATEGORY_LABELS } from "../data/periodicTable";
 import ElectronShellDiagram from "./ElectronShellDiagram";
 import LoadingSpinner from "./LoadingSpinner";
+import MarketEvolutionPanel from "./MarketEvolutionPanel";
 import { getElementResearch } from "../services/elementApi";
 import type { ElementResearch, ElementTileStyle } from "../types";
 import type { ElementModalProps, PropertyProps } from "./types/ElementModal.types";
@@ -9,12 +11,34 @@ import type { ElementModalProps, PropertyProps } from "./types/ElementModal.type
 export default function ElementModal({ element, onClose }: ElementModalProps) {
   const [research, setResearch] = useState<ElementResearch | null>(null);
   const [researchError, setResearchError] = useState("");
+  const [activeTab, setActiveTab] = useState<"details" | "market-evolution">("details");
+
+  function handleTabKeyDown(event: ReactKeyboardEvent<HTMLButtonElement>) {
+    const tabs = Array.from(event.currentTarget.parentElement?.querySelectorAll<HTMLButtonElement>('[role="tab"]') ?? []);
+    const currentIndex = tabs.indexOf(event.currentTarget);
+    const nextIndex = event.key === "ArrowRight" || event.key === "ArrowDown"
+      ? (currentIndex + 1) % tabs.length
+      : event.key === "ArrowLeft" || event.key === "ArrowUp"
+        ? (currentIndex - 1 + tabs.length) % tabs.length
+        : event.key === "Home"
+          ? 0
+          : event.key === "End"
+            ? tabs.length - 1
+            : currentIndex;
+
+    if (nextIndex !== currentIndex) {
+      event.preventDefault();
+      tabs[nextIndex].focus();
+      setActiveTab(tabs[nextIndex].id === "details-tab" ? "details" : "market-evolution");
+    }
+  }
 
   useEffect(() => {
     if (!element) return undefined;
     const controller = new AbortController();
     setResearch(null);
     setResearchError("");
+    setActiveTab("details");
     getElementResearch(element.atomicNumber, controller.signal)
       .then(setResearch)
       .catch((error) => {
@@ -61,28 +85,63 @@ export default function ElementModal({ element, onClose }: ElementModalProps) {
             <p className="modal-subtitle">Element {element.atomicNumber}</p>
           </div>
         </div>
-        <p className="element-summary">{element.summary}</p>
-        <div className="property-grid">
-          <Property label="Atomic mass" value={`${element.atomicMass} u`} />
-          <Property label="Phase at room temp." value={element.phase} />
-          <Property label="Group" value={element.group ? String(element.group) : "—"} />
-          <Property label="Period" value={element.period > 7 ? `${element.period === 8 ? "Lanthanide" : "Actinide"} series` : String(element.period)} />
-          <Property label="Electron configuration" value={element.electronConfiguration} />
-          <Property label="Discovered by" value={element.discoveredBy} />
+        <div className="modal-tabs" role="tablist" aria-label={`${element.name} information`}>
+          <button
+            id="details-tab"
+            className="modal-tab"
+            type="button"
+            role="tab"
+            aria-selected={activeTab === "details"}
+            aria-controls="details-panel"
+            onClick={() => setActiveTab("details")}
+            onKeyDown={handleTabKeyDown}
+          >
+            Details
+          </button>
+          <button
+            id="market-evolution-tab"
+            className="modal-tab"
+            type="button"
+            role="tab"
+            aria-selected={activeTab === "market-evolution"}
+            aria-controls="market-evolution-panel"
+            onClick={() => setActiveTab("market-evolution")}
+            onKeyDown={handleTabKeyDown}
+          >
+            Market evolution
+          </button>
         </div>
-        <ElectronShellDiagram element={element} />
-        <div className="research-panel" aria-busy={!research && !researchError}>
-          <h3>Element insight</h3>
-          {research ? (
-            <div className="insight-copy">
-              <p>{research.chemistry}</p>
-              <p>{research.factCheck}</p>
-            </div>
-          ) : researchError ? (
-            <p className="inline-error">{researchError}</p>
-          ) : (
-            <LoadingSpinner label="Loading element insights..." />
-          )}
+        <div id="details-panel" className="modal-tab-panel" role="tabpanel" aria-labelledby="details-tab" hidden={activeTab !== "details"}>
+          <p className="element-summary">{element.summary}</p>
+          <div className="property-grid">
+            <Property label="Atomic mass" value={`${element.atomicMass} u`} />
+            <Property label="Phase at room temp." value={element.phase} />
+            <Property label="Group" value={element.group ? String(element.group) : "—"} />
+            <Property label="Period" value={element.period > 7 ? `${element.period === 8 ? "Lanthanide" : "Actinide"} series` : String(element.period)} />
+            <Property label="Electron configuration" value={element.electronConfiguration} />
+            <Property label="Discovered by" value={element.discoveredBy} />
+          </div>
+          <ElectronShellDiagram element={element} />
+          <div className="research-panel" aria-busy={!research && !researchError}>
+            <h3>Element insight</h3>
+            {research ? (
+              <div className="insight-copy">
+                <p>{research.chemistry}</p>
+                <p>{research.factCheck}</p>
+              </div>
+            ) : researchError ? (
+              <p className="inline-error">{researchError}</p>
+            ) : (
+              <LoadingSpinner label="Loading element insights..." />
+            )}
+          </div>
+        </div>
+        <div id="market-evolution-panel" className="modal-tab-panel" role="tabpanel" aria-labelledby="market-evolution-tab" hidden={activeTab !== "market-evolution"}>
+          <MarketEvolutionPanel
+            atomicNumber={element.atomicNumber}
+            elementName={element.name}
+            active={activeTab === "market-evolution"}
+          />
         </div>
         <div className="modal-footer">
           <span>Reference data · Values may vary between isotopes</span>

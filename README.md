@@ -59,11 +59,16 @@ The backend fetches the [PeriodicTableOfElements.org bulk element export](https:
 
 The [NIST Chemistry WebBook](https://webbook.nist.gov/chemistry/) provides CGI-based, per-species HTML lookups rather than a bulk periodic-table JSON API. It is linked from the element dialog for reference, but is not scraped or used to populate the table fields. The local agent services summarize the loaded element facts; they do not call an external AI service or invent missing measurements.
 
+### Market evolution data
+
+The element dialog's **Market evolution** tab uses the World Bank's [Commodity Price Data (The Pink Sheet)](https://www.worldbank.org/en/research/commodity-markets), which publishes monthly nominal-USD commodity prices from 1960 to the present. The backend discovers the current monthly workbook from the World Bank page and caches it in memory for six hours. The chart supports aluminum, copper, lead, tin, nickel, zinc, gold, platinum, and silver; base-metal prices are in US dollars per metric tonne and precious-metal prices are in US dollars per troy ounce. These are commodity benchmark series, not a claim that every element has a directly traded pure-element price. Elements without a matching series show N/A. A source outage is shown as an error instead of being presented as missing market data.
+
 ## API
 
 - `GET /api/elements` — list elements; accepts `q` and `category` query parameters.
 - `GET /api/elements/:atomicNumber` — element facts.
 - `GET /api/elements/:atomicNumber/research` — deterministic research, chemistry, and fact-check summary.
+- `GET /api/elements/:atomicNumber/market?period=1y|5y|all` — World Bank monthly market-price series; defaults to five years and returns `null` when the Pink Sheet has no series for that element.
 - `GET /api/health` — service health.
 
 Element measurements and classifications are presented as a learning aid. Isotope-dependent values, especially for synthetic elements, are conventional reference values rather than claims about a single stable isotope.
