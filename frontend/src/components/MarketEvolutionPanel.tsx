@@ -3,12 +3,7 @@ import type { KeyboardEvent as ReactKeyboardEvent } from "react";
 import LoadingSpinner from "./LoadingSpinner";
 import { getElementMarketSeries } from "../services/elementApi";
 import type { ElementMarketSeries, MarketPeriod } from "../types";
-
-interface MarketEvolutionPanelProps {
-  atomicNumber: number;
-  elementName: string;
-  active: boolean;
-}
+import type { MarketEvolutionPanelProps, MarketPriceChartProps } from "./types/MarketEvolutionPanel.types";
 
 const PERIOD_OPTIONS: { value: MarketPeriod; label: string }[] = [
   { value: "1y", label: "1 year" },
@@ -99,7 +94,7 @@ export default function MarketEvolutionPanel({ atomicNumber, elementName, active
   );
 }
 
-function MarketPriceChart({ series }: { series: ElementMarketSeries }) {
+function MarketPriceChart({ series }: MarketPriceChartProps) {
   const [highlightedIndex, setHighlightedIndex] = useState<number | null>(null);
   const width = 760;
   const height = 270;

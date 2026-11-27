@@ -38,6 +38,10 @@ export interface ElementResearch {
   source: string;
 }
 
+export interface ApiError {
+  error?: string;
+}
+
 export type MarketPeriod = "1y" | "5y" | "all";
 
 export interface MarketPricePoint {

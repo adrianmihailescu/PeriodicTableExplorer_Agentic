@@ -1,8 +1,4 @@
-import type { Element, ElementMarketSeries, ElementResearch, MarketDataCoverage, MarketPeriod } from "../types";
-
-interface ApiError {
-  error?: string;
-}
+import type { ApiError, Element, ElementMarketSeries, ElementResearch, MarketDataCoverage, MarketPeriod } from "../types";
 
 async function request<T>(path: string, options?: RequestInit): Promise<T> {
   const response = await fetch(`/api${path}`, options);
