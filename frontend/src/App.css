@@ -420,6 +420,53 @@ button {
   color: #715555;
 }
 
+.loading-state {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #5b91c8;
+  font-size: 13px;
+}
+
+.loading-state--large {
+  min-height: 390px;
+  flex-direction: column;
+  justify-content: center;
+  gap: 16px;
+  font-size: 14px;
+}
+
+.loading-spinner {
+  width: 22px;
+  height: 22px;
+  flex: 0 0 auto;
+  border: 3px solid #d9efff;
+  border-top-color: #55a9e8;
+  border-right-color: #91d0fa;
+  border-radius: 50%;
+  box-shadow: 0 0 12px rgba(89, 177, 235, .2);
+  animation: loading-spin .8s linear infinite;
+}
+
+.loading-state--large .loading-spinner {
+  width: 48px;
+  height: 48px;
+  border-width: 5px;
+  box-shadow: 0 0 20px rgba(89, 177, 235, .28);
+}
+
+@keyframes loading-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .loading-spinner {
+    animation-duration: 1.8s;
+  }
+}
+
 .page-footer {
   display: flex;
   justify-content: space-between;

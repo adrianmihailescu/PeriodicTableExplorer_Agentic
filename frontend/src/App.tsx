@@ -3,6 +3,7 @@ import PeriodicTable from "./components/PeriodicTable";
 import SearchBar from "./components/SearchBar";
 import CategoryLegend from "./components/CategoryLegend";
 import ElementModal from "./components/ElementModal";
+import LoadingSpinner from "./components/LoadingSpinner";
 import { CATEGORY_LABELS } from "./data/periodicTable";
 import { getElements } from "./services/elementApi";
 import type { Element, ElementCategory } from "./types";
@@ -13,13 +14,15 @@ export default function App() {
   const [category, setCategory] = useState<ElementCategory | "">("");
   const [selectedElement, setSelectedElement] = useState<Element | null>(null);
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     getElements()
       .then(setElements)
       .catch((requestError: unknown) => {
         setError(requestError instanceof Error ? requestError.message : "The element service could not be reached.");
-      });
+      })
+      .finally(() => setIsLoading(false));
   }, []);
 
   const filteredElements = useMemo(() => {
@@ -73,6 +76,8 @@ export default function App() {
             <strong>Couldn’t load the elements.</strong>
             <span>{error} Start the API with <code>npm run dev</code> from the project root.</span>
           </div>
+        ) : isLoading ? (
+          <LoadingSpinner label="Loading the periodic table..." size="large" />
         ) : (
           <>
             <PeriodicTable elements={filteredElements} selectedElement={selectedElement} onSelect={setSelectedElement} />

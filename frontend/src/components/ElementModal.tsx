@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { CATEGORY_COLORS, CATEGORY_LABELS } from "../data/periodicTable";
+import LoadingSpinner from "./LoadingSpinner";
 import { getElementResearch } from "../services/elementApi";
 import type { Element, ElementResearch, ElementTileStyle } from "../types";
 
@@ -72,7 +73,7 @@ export default function ElementModal({ element, onClose }: ElementModalProps) {
           <Property label="Electron configuration" value={element.electronConfiguration} />
           <Property label="Discovered by" value={element.discoveredBy} />
         </div>
-        <div className="research-panel">
+        <div className="research-panel" aria-busy={!research && !researchError}>
           <h3>Element insight</h3>
           {research ? (
             <div className="insight-copy">
@@ -82,7 +83,7 @@ export default function ElementModal({ element, onClose }: ElementModalProps) {
           ) : researchError ? (
             <p className="inline-error">{researchError}</p>
           ) : (
-            <p className="muted-copy">Gathering element facts…</p>
+            <LoadingSpinner label="Loading element insights..." />
           )}
         </div>
         <div className="modal-footer">
