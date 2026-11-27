@@ -1,4 +1,4 @@
-import type { Element, ElementMarketSeries, ElementResearch, MarketPeriod } from "../types";
+import type { Element, ElementMarketSeries, ElementResearch, MarketDataCoverage, MarketPeriod } from "../types";
 
 interface ApiError {
   error?: string;
@@ -31,4 +31,8 @@ export function getElementMarketSeries(
   signal?: AbortSignal,
 ): Promise<ElementMarketSeries | null> {
   return request(`/elements/${atomicNumber}/market?period=${period}`, { signal });
+}
+
+export function getMarketDataCoverage(signal?: AbortSignal): Promise<MarketDataCoverage> {
+  return request("/elements/market-coverage", { signal });
 }

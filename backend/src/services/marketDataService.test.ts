@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import * as XLSX from "@e965/xlsx";
-import { parseWorldBankMarketWorkbook } from "./marketDataService.js";
+import { parseWorldBankMarketCoverage, parseWorldBankMarketWorkbook } from "./marketDataService.js";
 
 function createWorkbook(): Buffer {
   const sheet = XLSX.utils.aoa_to_sheet([
@@ -40,4 +40,14 @@ test("World Bank market workbook parsing returns real-series metadata and applie
 
 test("World Bank market data leaves elements without a matching commodity series unavailable", () => {
   assert.equal(parseWorldBankMarketWorkbook(createWorkbook(), 1, "all", ""), null);
+});
+
+test("market coverage reflects the commodity columns and observations in the current workbook", () => {
+  const coverage = parseWorldBankMarketCoverage(
+    createWorkbook(),
+    "https://thedocs.worldbank.org/commodity-prices.xlsx",
+  );
+
+  assert.deepEqual(coverage.atomicNumbers, [13, 29, 79]);
+  assert.equal(coverage.updatedOn, "Updated on January 02, 2025");
 });

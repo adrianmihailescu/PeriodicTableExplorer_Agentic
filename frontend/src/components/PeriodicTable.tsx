@@ -2,7 +2,7 @@ import ElementTile from "./ElementTile";
 import { SERIES_PERIODS } from "../data/periodicTable";
 import type { PeriodicTableProps } from "./types/PeriodicTable.types";
 
-export default function PeriodicTable({ elements, selectedElement, onSelect }: PeriodicTableProps) {
+export default function PeriodicTable({ elements, marketDataAtomicNumbers, selectedElement, onSelect }: PeriodicTableProps) {
   const mainElements = elements.filter((element) => element.period <= 7);
   const seriesElements = elements.filter((element) => element.period >= 8);
 
@@ -17,6 +17,7 @@ export default function PeriodicTable({ elements, selectedElement, onSelect }: P
             <ElementTile
               key={element.atomicNumber}
               element={element}
+              marketDataAvailable={marketDataAtomicNumbers.has(element.atomicNumber)}
               selected={selectedElement?.atomicNumber === element.atomicNumber}
               onClick={onSelect}
               style={{ "--group": element.group ?? undefined, "--period": element.period }}
@@ -33,6 +34,7 @@ export default function PeriodicTable({ elements, selectedElement, onSelect }: P
                   <ElementTile
                     key={element.atomicNumber}
                     element={element}
+                    marketDataAvailable={marketDataAtomicNumbers.has(element.atomicNumber)}
                     selected={selectedElement?.atomicNumber === element.atomicNumber}
                     onClick={onSelect}
                     style={{ gridColumn: element.atomicNumber - (Number(period) === 8 ? 56 : 88) }}

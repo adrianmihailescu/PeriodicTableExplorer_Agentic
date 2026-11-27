@@ -61,7 +61,7 @@ The [NIST Chemistry WebBook](https://webbook.nist.gov/chemistry/) provides CGI-b
 
 ### Market evolution data
 
-The element dialog's **Market evolution** tab uses the World Bank's [Commodity Price Data (The Pink Sheet)](https://www.worldbank.org/en/research/commodity-markets), which publishes monthly nominal-USD commodity prices from 1960 to the present. The backend discovers the current monthly workbook from the World Bank page and caches it in memory for six hours. The chart supports aluminum, copper, lead, tin, nickel, zinc, gold, platinum, and silver; base-metal prices are in US dollars per metric tonne and precious-metal prices are in US dollars per troy ounce. These are commodity benchmark series, not a claim that every element has a directly traded pure-element price. Elements without a matching series show N/A. A source outage is shown as an error instead of being presented as missing market data.
+The element dialog's **Market evolution** tab uses the World Bank's [Commodity Price Data (The Pink Sheet)](https://www.worldbank.org/en/research/commodity-markets), which publishes monthly nominal-USD commodity prices from 1960 to the present. The backend discovers the current monthly workbook from the World Bank page and caches it in memory for one hour. The periodic table's `$` badges are computed from the workbook's current headers and available observations; the frontend refreshes this coverage every 30 minutes. Current supported series include aluminum, copper, lead, tin, nickel, zinc, gold, platinum, and silver. Base-metal prices are in US dollars per metric tonne and precious-metal prices are in US dollars per troy ounce. These are commodity benchmark series, not a claim that every element has a directly traded pure-element price. Elements without a matching series show N/A. A source outage is shown as an error instead of being presented as missing market data.
 
 ## API
 
@@ -69,6 +69,7 @@ The element dialog's **Market evolution** tab uses the World Bank's [Commodity P
 - `GET /api/elements/:atomicNumber` — element facts.
 - `GET /api/elements/:atomicNumber/research` — deterministic research, chemistry, and fact-check summary.
 - `GET /api/elements/:atomicNumber/market?period=1y|5y|all` — World Bank monthly market-price series; defaults to five years and returns `null` when the Pink Sheet has no series for that element.
+- `GET /api/elements/market-coverage` — current element price-series availability from the World Bank workbook.
 - `GET /api/health` — service health.
 
 Element measurements and classifications are presented as a learning aid. Isotope-dependent values, especially for synthetic elements, are conventional reference values rather than claims about a single stable isotope.

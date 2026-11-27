@@ -56,6 +56,13 @@ export interface ElementMarketSeries {
   points: MarketPricePoint[];
 }
 
+export interface MarketDataCoverage {
+  atomicNumbers: number[];
+  updatedOn: string;
+  sourceName: string;
+  sourceUrl: string;
+}
+
 export type ElementTileStyle = CSSProperties & {
   [property: `--${string}`]: string | number | undefined;
 };

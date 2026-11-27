@@ -1,8 +1,14 @@
 import * as XLSX from "@e965/xlsx";
-import type { CachedWorkbook, ElementMarketSeries, MarketPeriod, MarketPricePoint } from "../types.js";
+import type {
+  CachedWorkbook,
+  ElementMarketSeries,
+  MarketDataCoverage,
+  MarketPeriod,
+  MarketPricePoint,
+} from "../types.js";
 
 const WORLD_BANK_COMMODITY_PAGE = "https://www.worldbank.org/en/research/commodity-markets";
-const CACHE_DURATION_MS = 6 * 60 * 60 * 1000;
+const CACHE_DURATION_MS = 60 * 60 * 1000;
 const FETCH_TIMEOUT_MS = 15_000;
 const MAX_WORKBOOK_BYTES = 10 * 1024 * 1024;
 const SOURCE_NAME = "World Bank Commodity Price Data (The Pink Sheet)";
@@ -151,6 +157,43 @@ export function parseWorldBankMarketWorkbook(
   };
 }
 
+export function parseWorldBankMarketCoverage(data: Buffer, sourceUrl: string): MarketDataCoverage {
+  const workbook = XLSX.read(data, { type: "buffer" });
+  const sheet = workbook.Sheets["Monthly Prices"];
+  if (!sheet) {
+    throw new Error("The World Bank workbook is missing its Monthly Prices sheet.");
+  }
+
+  const rows = XLSX.utils.sheet_to_json<unknown[]>(sheet, { header: 1, raw: true, defval: null });
+  const headers = rows[4];
+  const units = rows[5];
+  if (!headers || !units) {
+    throw new Error("The World Bank workbook is missing commodity headers or units.");
+  }
+  const dataRows = rows.slice(6);
+  const atomicNumbers = Object.entries(ELEMENT_COMMODITIES).flatMap(([atomicNumber, mapping]) => {
+    const column = headers.findIndex((header) => header === mapping.commodity);
+    if (column < 0 || !["($/mt)", "($/troy oz)"].includes(String(units[column]))) return [];
+    const hasPrices = dataRows.some((row) => {
+      const date = row[0];
+      return typeof date === "string"
+        && /^\d{4}M\d{2}$/.test(date)
+        && typeof row[column] === "number"
+        && Number.isFinite(row[column]);
+    });
+    return hasPrices ? [Number(atomicNumber)] : [];
+  });
+  const updatedRow = rows[3];
+  const updatedOn = typeof updatedRow?.[0] === "string" ? updatedRow[0] : "Not provided";
+
+  return {
+    atomicNumbers,
+    updatedOn,
+    sourceName: SOURCE_NAME,
+    sourceUrl,
+  };
+}
+
 export async function getElementMarketSeries(
   atomicNumber: number,
   period: MarketPeriod,
@@ -160,4 +203,9 @@ export async function getElementMarketSeries(
 
   const workbook = await getWorkbook();
   return parseWorldBankMarketWorkbook(workbook.data, atomicNumber, period, workbook.sourceUrl);
+}
+
+export async function getMarketDataCoverage(): Promise<MarketDataCoverage> {
+  const workbook = await getWorkbook();
+  return parseWorldBankMarketCoverage(workbook.data, workbook.sourceUrl);
 }

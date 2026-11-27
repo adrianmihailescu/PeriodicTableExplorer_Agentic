@@ -3,7 +3,7 @@ import { ELEMENT_CATEGORIES } from "../types.js";
 import type { ElementCategory, MarketPeriod } from "../types.js";
 import { getElementByAtomicNumber, listElements } from "../services/elementService.js";
 import { researchElement } from "../services/agentService.js";
-import { getElementMarketSeries } from "../services/marketDataService.js";
+import { getElementMarketSeries, getMarketDataCoverage } from "../services/marketDataService.js";
 
 const MARKET_PERIODS: MarketPeriod[] = ["1y", "5y", "all"];
 
@@ -91,5 +91,15 @@ export async function getElementMarketData(req: Request, res: Response): Promise
     console.error("Could not retrieve World Bank market data.", error);
     const reason = error instanceof Error ? error.message : "Unknown data-source error.";
     res.status(502).json({ error: `Could not retrieve World Bank market data. ${reason}` });
+  }
+}
+
+export async function getMarketCoverage(_req: Request, res: Response): Promise<void> {
+  try {
+    res.json(await getMarketDataCoverage());
+  } catch (error) {
+    console.error("Could not retrieve World Bank market-data coverage.", error);
+    const reason = error instanceof Error ? error.message : "Unknown data-source error.";
+    res.status(502).json({ error: `Could not retrieve World Bank market-data coverage. ${reason}` });
   }
 }

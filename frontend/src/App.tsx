@@ -5,16 +5,26 @@ import CategoryLegend from "./components/CategoryLegend";
 import ElementModal from "./components/ElementModal";
 import LoadingSpinner from "./components/LoadingSpinner";
 import { CATEGORY_LABELS } from "./data/periodicTable";
-import { getElements } from "./services/elementApi";
-import type { Element, ElementCategory } from "./types";
+import { getElements, getMarketDataCoverage } from "./services/elementApi";
+import type { Element, ElementCategory, MarketDataCoverage } from "./types";
+
+const MARKET_COVERAGE_REFRESH_MS = 30 * 60 * 1000;
 
 export default function App() {
   const [elements, setElements] = useState<Element[]>([]);
+  const [marketCoverage, setMarketCoverage] = useState<MarketDataCoverage | null>(null);
+  const [marketCoverageError, setMarketCoverageError] = useState("");
+  const [marketCoverageRetry, setMarketCoverageRetry] = useState(0);
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState<ElementCategory | "">("");
   const [selectedElement, setSelectedElement] = useState<Element | null>(null);
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(true);
+
+  const marketDataAtomicNumbers = useMemo(
+    () => new Set(marketCoverage?.atomicNumbers ?? []),
+    [marketCoverage],
+  );
 
   useEffect(() => {
     getElements()
@@ -24,6 +34,35 @@ export default function App() {
       })
       .finally(() => setIsLoading(false));
   }, []);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    let requestInProgress = false;
+    const refreshMarketCoverage = () => {
+      if (requestInProgress) return;
+      requestInProgress = true;
+      getMarketDataCoverage(controller.signal)
+        .then((coverage) => {
+          setMarketCoverage(coverage);
+          setMarketCoverageError("");
+        })
+        .catch((requestError: unknown) => {
+          if (!controller.signal.aborted) {
+            setMarketCoverageError(requestError instanceof Error ? requestError.message : "Could not load market-data coverage.");
+          }
+        })
+        .finally(() => {
+          requestInProgress = false;
+        });
+    };
+
+    refreshMarketCoverage();
+    const intervalId = window.setInterval(refreshMarketCoverage, MARKET_COVERAGE_REFRESH_MS);
+    return () => {
+      window.clearInterval(intervalId);
+      controller.abort();
+    };
+  }, [marketCoverageRetry]);
 
   const filteredElements = useMemo(() => {
     const normalizedSearch = search.trim().toLocaleLowerCase();
@@ -80,7 +119,12 @@ export default function App() {
           <LoadingSpinner label="Loading the periodic table..." size="large" />
         ) : (
           <>
-            <PeriodicTable elements={filteredElements} selectedElement={selectedElement} onSelect={setSelectedElement} />
+            <PeriodicTable
+              elements={filteredElements}
+              marketDataAtomicNumbers={marketDataAtomicNumbers}
+              selectedElement={selectedElement}
+              onSelect={setSelectedElement}
+            />
             {filteredElements.length === 0 && (
               <p className="empty-state">No elements match your search. Try another name, symbol, or family.</p>
             )}
@@ -88,6 +132,23 @@ export default function App() {
         )}
         <div className="table-footnote">
           <span>Click any element to explore its properties</span>
+          {marketCoverageError ? (
+            <span className="market-coverage-error" role="alert">
+              <span>
+                {marketCoverage
+                  ? `Coverage refresh failed; showing last successful data. ${marketCoverageError}`
+                  : `Market price coverage unavailable. ${marketCoverageError}`}
+              </span>
+              <button type="button" onClick={() => setMarketCoverageRetry((retry) => retry + 1)}>Retry</button>
+            </span>
+          ) : marketCoverage ? (
+            <span className="market-data-legend">
+              <span className="market-data-legend-mark" aria-hidden="true">$</span>
+              Market price history · source updated {marketCoverage.updatedOn.replace(/^Updated on /, "")}
+            </span>
+          ) : (
+            <LoadingSpinner label="Checking market data coverage..." />
+          )}
           {category && <button type="button" onClick={() => setCategory("")}>Clear {CATEGORY_LABELS[category]} filter ×</button>}
         </div>
       </section>
