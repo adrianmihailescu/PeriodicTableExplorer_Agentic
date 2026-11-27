@@ -1,10 +1,9 @@
 import type { Request, Response } from "express";
 import { ELEMENT_CATEGORIES } from "../types.js";
-import type { ElementCategory } from "../types.js";
+import type { ElementCategory, MarketPeriod } from "../types.js";
 import { getElementByAtomicNumber, listElements } from "../services/elementService.js";
 import { researchElement } from "../services/agentService.js";
 import { getElementMarketSeries } from "../services/marketDataService.js";
-import type { MarketPeriod } from "../services/marketDataService.js";
 
 const MARKET_PERIODS: MarketPeriod[] = ["1y", "5y", "all"];
 

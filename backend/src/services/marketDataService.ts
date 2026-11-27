@@ -1,22 +1,5 @@
 import * as XLSX from "@e965/xlsx";
-
-export type MarketPeriod = "1y" | "5y" | "all";
-
-export interface MarketPricePoint {
-  date: string;
-  value: number;
-}
-
-export interface ElementMarketSeries {
-  element: string;
-  commodity: string;
-  unit: string;
-  period: MarketPeriod;
-  updatedOn: string;
-  sourceName: string;
-  sourceUrl: string;
-  points: MarketPricePoint[];
-}
+import type { CachedWorkbook, ElementMarketSeries, MarketPeriod, MarketPricePoint } from "../types.js";
 
 const WORLD_BANK_COMMODITY_PAGE = "https://www.worldbank.org/en/research/commodity-markets";
 const CACHE_DURATION_MS = 6 * 60 * 60 * 1000;
@@ -35,12 +18,6 @@ const ELEMENT_COMMODITIES: Record<number, { element: string; commodity: string }
   78: { element: "Platinum", commodity: "Platinum" },
   47: { element: "Silver", commodity: "Silver" },
 };
-
-interface CachedWorkbook {
-  data: Buffer;
-  sourceUrl: string;
-  expiresAt: number;
-}
 
 let cachedWorkbook: CachedWorkbook | undefined;
 let workbookRequest: Promise<CachedWorkbook> | undefined;
