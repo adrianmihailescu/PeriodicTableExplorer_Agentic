@@ -2,11 +2,17 @@
 
 An interactive periodic table built with React, Vite, TypeScript, and Express. Select an element to see its properties, search by name or symbol, and filter by element family.
 
+Gathers also some historical price informations from the World Bank Commodities series.
+
 ![alt text](images/image.png)
 ![alt text](images/image-3.png)
 search functionality
 ![alt text](images/image-1.png)
 ![alt text](images/image-2.png)
+
+Clicking an element offers also the posibility to view historical price informations from the World Bank series
+![alt text](images/image-4.png)
+![alt text](images/image-5.png)
 
 ## Requirements
 
